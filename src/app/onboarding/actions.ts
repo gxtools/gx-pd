@@ -7,12 +7,8 @@ import * as schema from "@/lib/db/schema";
 import { parseFrameworkText } from "@/lib/db/parse-framework";
 import { redirect } from "next/navigation";
 
-export async function signInAction(formData: FormData) {
-  await signIn("credentials", {
-    email: formData.get("email") as string,
-    name: formData.get("name") as string,
-    redirect: false,
-  });
+export async function signInWithGitHub() {
+  await signIn("github", { redirectTo: "/onboarding" });
 }
 
 export async function completeOnboarding(formData: FormData) {

@@ -1,33 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { signInAction, completeOnboarding } from "./actions";
+import { signInWithGitHub, completeOnboarding } from "./actions";
 
 export function OnboardingForm({ isSignedIn }: { isSignedIn: boolean }) {
-  const [step, setStep] = useState(isSignedIn ? 1 : 0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
-
-  async function handleSignIn(formData: FormData) {
-    setLoading(true);
-    setError(null);
-    try {
-      await signInAction(formData);
-      setStep(1);
-      router.refresh();
-    } catch {
-      setError("Failed to sign in. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }
 
   async function handleComplete(formData: FormData) {
     setLoading(true);
@@ -40,26 +23,17 @@ export function OnboardingForm({ isSignedIn }: { isSignedIn: boolean }) {
     }
   }
 
-  if (step === 0) {
+  if (!isSignedIn) {
     return (
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Sign In</CardTitle>
-          <CardDescription>Enter your email to get started</CardDescription>
+          <CardDescription>Sign in with GitHub to get started</CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={handleSignIn} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" name="name" placeholder="Your name" required />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" type="email" placeholder="you@example.com" required />
-            </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Continue"}
+          <form action={signInWithGitHub}>
+            <Button type="submit" className="w-full">
+              Sign in with GitHub
             </Button>
           </form>
         </CardContent>
